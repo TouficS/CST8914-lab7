@@ -29,23 +29,25 @@
         <h1>Feedback form</h1>
     <form>
         <div class="control">
-          <label>Full name <span class="required">*</span></label><input id="name" name="name" type="text" />
+          <label for="name">Full name <span class="required">(required)</span></label><input id="name" name="name" type="text" />
         </div>
         <div class="control">
-          <label>Biography</label><textarea id="biography" name="biography" type="text"></textarea>
-          <span>Include examples on your skills in JavaScript.</span>
+          <label for="biography">Biography</label><textarea id="biography"aria-describedby="biography_description"name="biography" ></textarea>
+          <span id="biography_description">Include examples on your skills in JavaScript.</span>
         </div>
-        
-          <div>Gender</div>
+        <fieldset>
+          <legend>Gender</legend>
           <div class="control">
-            <input id="gender_male" name="gender" type="radio" value="male" /><label>Male</label>
-          </div>
+            <input id="gender_male" name="gender" type="radio" value="male" /><label for="gender_male">Male</label>
+                </div>
+          
+    
           <div class="control">
-            <input id="gender_female" name="gender" type="radio" value="female" /><label>Female</label>
+            <input id="gender_female" name="gender" type="radio" value="female" /><label for="gender_female">Female</label>
           </div>
-        
+        </fieldset>
         <div class="control">
-          <input id="accept_agbs" name="accept_agbs" type="checkbox" value="1" /><label>I accept the terms and conditions</label>
+          <input id="accept_agbs" name="accept_agbs" type="checkbox" value="1" /><label for="accept_agbs">I accept the terms and conditions</label>
         </div>
         <div class="control">
           <input name="validate" type="hidden" value="1" /><input type="submit" value="Register" />
@@ -76,7 +78,7 @@
       
           if ((value = $.urlParam(input)) === null) {
             if ($('fieldset.errors').length === 0) {
-              $('form').prepend('<fieldset class="errors"><legend>Errors</legend><ul></ul></fieldset>');
+              $('form').prepend('<fieldset class="errors" tabindex="-1"><legend>Errors</legend><ul></ul></fieldset>');
             }
       
             $referencedElement = null;
@@ -92,7 +94,8 @@
               $referencedElement = $input;
             }
       // R.G. hint: fix next line ;)
-            $error = $('<a>' + message + '</a>');
+            $error= $('<a>' + message + '</a>');
+            $error.attr('href', '#' + $referencedElement.attr('id'));
             $error.click(function (e) {
               // If we rely on the link's href pointing to the input's ID, it doesn't trigger forms mode in screen readers
               $referencedElement.focus();
@@ -103,13 +106,13 @@
       
             if ($(':not(form):focus').length === 0) {
               // See https://stackoverflow.com/questions/46134247/jquery-setting-focus-doesnt-work-in-ie11/
-            
+              $('fieldset.errors').focus();
             }
           } else {
             if ($input.is(':checkbox')) {
               $input.attr('checked', true);
             }
-      
+       
             if ($input.is(':radio')) {
               return $input.filter('[value="' + value + '"]').attr('checked', true);
             } else {
@@ -125,11 +128,14 @@
             validateInput('gender', 'Please tell us your gender!');
             validateInput('accept_agbs', 'You must accept our terms and conditions!');
       
-            if ($('.error').length === 0) {
+            if ($('fieldset.errors').length === 0) {
               return alert('All inputs are valid.');
             }
+            else {
+              return $('fieldset.errors').focus();
+            }
           }
-        });
+        }); 
       }).call(void 0);</script>
                 
         </body>
